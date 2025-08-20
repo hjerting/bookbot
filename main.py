@@ -1,8 +1,15 @@
-BOOK = "books/frankenstein.txt"
+import sys
+from stats import get_num_words
+
+# BOOK = "books/frankenstein.txt"
 
 def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 main.py <path_to_book>")
+        sys.exit(1)
+    BOOK = sys.argv[1]
     text = get_book_text(BOOK)
-    word_count = count_words(text)
+    word_count = get_num_words(text)
     letter_counts = count_letters(text)
     make_report(BOOK, word_count, letter_counts)
 
@@ -18,20 +25,19 @@ def get_book_text(filename):
     with open(filename) as file:
         return file.read()
 
-def count_words(text):
-    words = text.split()
-    return len(words)
-
 def count_letters(text):
     lower_case = text.lower()
     letter_counts = {}
     for letter in lower_case:
-        letter_counts[letter] = letter_counts.get(letter, 0) + 1
+        if letter.isalpha():
+            letter_counts[letter] = letter_counts.get(letter, 0) + 1
     return letter_counts
 
 def letter_report(character_dict):
-    for key, value in character_dict.items():
+    sorted_items = sorted(character_dict.items(), key=lambda item: item[1], reverse=True)
+    for key, value in sorted_items:
         if key.isalpha():
-            print(f"The '{key}' character was found {value} times")
+            print(f"{key}: {value}")
 
-main()
+if __name__ == "__main__":
+    main()
